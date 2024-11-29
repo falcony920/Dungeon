@@ -12,10 +12,10 @@ public class RenderEngine extends JPanel implements Engine {
     private String fpsText = "FPS: 0"; // To hold FPS value as string
     private Image heartImage; // Heart image
     private DynamicSprite hero;
-    private long sprintStartTime = 0; // Timestamp when sprint started
-    private final int sprintDuration = 3000; // 3 seconds for sprint
-    private final int sprintBarWidth = 200; // Width of the sprint bar
-    private final int sprintBarHeight = 20; // Height of the sprint bar
+    // private long sprintStartTime = 0; // Timestamp when sprint started
+    // private final int sprintDuration = 3000; // 3 seconds for sprint
+    private final int sprintBarWidth = 150; // Width of the sprint bar
+    private final int sprintBarHeight = 15; // Height of the sprint bar
 
     public RenderEngine(JFrame jFrame, DynamicSprite hero) {
         renderList = new ArrayList<>();
@@ -63,17 +63,33 @@ public class RenderEngine extends JPanel implements Engine {
 
         // Draw sprint bar (below FPS and hearts)
         if (hero.isRunning()) {
-            if (sprintStartTime == 0) {
-                sprintStartTime = System.currentTimeMillis(); // Start sprinting
+            // Use the getter method to access sprintStartTime
+            if (hero.getSprintStartTime() == -1) { // If sprintStartTime is -1, sprint has not started yet
+                hero.setSprintStartTime(System.currentTimeMillis()); // Start sprinting
+                System.out.println("Sprint started at: " + hero.getSprintStartTime()); // Debug: Sprint start time
             }
-            long elapsedTime = System.currentTimeMillis() - sprintStartTime;
-            int sprintWidth = (int) (sprintBarWidth * (1 - (double) elapsedTime / sprintDuration));
-            if (elapsedTime >= sprintDuration) {
+
+            long elapsedTime = System.currentTimeMillis() - hero.getSprintStartTime();
+            System.out.println("Elapsed time: " + elapsedTime + "ms"); // Debug: Elapsed time since sprint started
+
+            // Use the getter method to access sprintDuration
+            int sprintWidth = (int) (sprintBarWidth * (1 - (double) elapsedTime / hero.getSprintDuration()));
+
+            if (elapsedTime >= hero.getSprintDuration()) {
                 sprintWidth = 0; // Sprint time is over
                 hero.setRunning(false); // Stop the hero from running
+                System.out.println("Sprint finished, width reset to: " + sprintWidth); // Debug: Sprint finished
             }
+
+            // Draw the sprint bar
             g.setColor(Color.GREEN);
-            g.fillRect(10, 40, sprintWidth, sprintBarHeight); // Draw the sprint bar
+            g.fillRect(200, 15, sprintWidth, sprintBarHeight); // Draw the sprint bar
+
+            // Debug: Print sprint bar width
+            System.out.println("Sprint bar width: " + sprintWidth); // Debug: Current width of the sprint bar
+        } else {
+            // Debug: Print when hero is not running
+            System.out.println("Hero is not running.");
         }
 
     }

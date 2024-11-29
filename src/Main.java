@@ -48,7 +48,7 @@ public class Main {
                 ImageIO.read(new File("./img/heroTileSheetLowRes.png")), 48, 50);
 
         // Initialize the different engines for rendering, physics, and game logic
-        renderEngine = new RenderEngine(displayZoneFrame);
+        renderEngine = new RenderEngine(displayZoneFrame, hero);
         physicEngine = new PhysicEngine();
         gameEngine = new GameEngine(hero);
 

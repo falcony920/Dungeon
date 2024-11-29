@@ -8,7 +8,9 @@ public class DynamicSprite extends SolidSprite {
     private double speed = 5;
     private double timeBetweenFrame = 250;
     private boolean isWalking = true;
-    private boolean isRunning = false; // on fera accélérer le perso en appuyant sur la touche ctrl
+    private boolean isRunning = false; // on fera accélérer le perso en appuyant sur la touche z
+    private long sprintStartTime;
+    private final int sprintDuration = 2000; // 3 seconds for sprint
     private final int spriteSheetNumberOfColumn = 10;
 
     public DynamicSprite(double x, double y, Image image, double width, double height) {
@@ -25,6 +27,21 @@ public class DynamicSprite extends SolidSprite {
     // Méthode pour définir la vitesse du sprite
     public void setSpeed(double speed) {
         this.speed = speed; // Met à jour la vitesse normale
+    }
+
+    // Getter for sprintStartTime
+    public long getSprintStartTime() {
+        return sprintStartTime;
+    }
+
+    // Setter for sprintStartTime
+    public void setSprintStartTime(long sprintStartTime) {
+        this.sprintStartTime = sprintStartTime;
+    }
+
+    // Getter for sprintDuration
+    public int getSprintDuration() {
+        return sprintDuration;
     }
 
     private boolean isMovingPossible(ArrayList<Sprite> environment) {
@@ -94,9 +111,34 @@ public class DynamicSprite extends SolidSprite {
         return isRunning;
     }
 
-    // Méthode pour activer ou désactiver la course
     public void setRunning(boolean running) {
-        isRunning = running;
+        // Si le héros commence à courir
+        if (running && !isRunning) {
+            // Commence le sprint et enregistre le temps de départ
+            sprintStartTime = System.currentTimeMillis();
+            System.out.println("Sprint started at: " + sprintStartTime); // Debug : afficher le début du sprint
+        }
+
+        // Vérifie si le sprint peut continuer
+        if (running) {
+            long currentTime = System.currentTimeMillis();
+            // Si le temps écoulé depuis le début du sprint est inférieur à la durée
+            // autorisée, on peut continuer
+            if (currentTime - sprintStartTime < sprintDuration) {
+                isRunning = true; // Le héros peut courir
+                System.out.println("Hero is running."); // Debug : afficher si le héros court
+            } else {
+                isRunning = false; // La barre de sprint est vide
+                System.out.println("Sprint time over. Hero cannot run anymore."); // Debug : afficher que le sprint est
+                                                                                  // terminé
+            }
+        } else {
+            // Si le héros arrête de courir, on arrête le sprint
+            isRunning = false;
+            System.out.println("Hero stopped running."); // Debug : afficher si le héros arrête de courir
+        }
+        // Affiche le nouvel état de la course
+        System.out.println("Course changée : " + (isRunning ? "Activée" : "Désactivée"));
     }
 
     @Override
