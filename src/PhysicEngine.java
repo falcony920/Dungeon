@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 
 public class PhysicEngine implements Engine {
@@ -6,13 +5,13 @@ public class PhysicEngine implements Engine {
     private ArrayList<Sprite> environment;
 
     public PhysicEngine() {
-        movingSpriteList = new ArrayList<>();
-        environment = new ArrayList<>();
+        movingSpriteList = new ArrayList<>(); // Initialize moving sprites list.
+        environment = new ArrayList<>(); // Initialize environment list.
     }
 
     public void addToEnvironmentList(Sprite sprite) {
         if (!environment.contains(sprite)) {
-            environment.add(sprite);
+            environment.add(sprite); // Add sprite to environment.
         }
     }
 
@@ -22,14 +21,14 @@ public class PhysicEngine implements Engine {
 
     public void addToMovingSpriteList(DynamicSprite sprite) {
         if (!movingSpriteList.contains(sprite)) {
-            movingSpriteList.add(sprite);
+            movingSpriteList.add(sprite); // Add sprite to moving list.
         }
     }
 
     @Override
     public void update() {
         for (DynamicSprite dynamicSprite : movingSpriteList) {
-            dynamicSprite.moveIfPossible(environment); // Déplacer le sprite avec la
+            dynamicSprite.moveIfPossible(environment); // // Move sprite if no collision.
         }
     }
 }

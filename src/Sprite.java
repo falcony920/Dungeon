@@ -1,6 +1,6 @@
 import java.awt.*;
 
-public class Sprite implements Displayable{
+public class Sprite implements Displayable {
     protected double x;
     protected double y;
     protected final Image image;
@@ -17,6 +17,6 @@ public class Sprite implements Displayable{
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(image,(int)x,(int)y,null);
+        g.drawImage(image, (int) x, (int) y, null);// Draw the sprite at the specified position
     }
 }

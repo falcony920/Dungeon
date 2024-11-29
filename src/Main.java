@@ -81,26 +81,7 @@ public class Main {
         // Add the hero to the list of moving sprites managed by the physic engine
         physicEngine.addToMovingSpriteList(hero);
 
-        // Set up the environment (solid objects like walls, traps) and add them for
-        // collision detection
-        /**
-         * final Image imageTrap = ImageIO.read(new File("./img/trap.png"));
-         * final int imageTrapWidth = imageTrap.getWidth(null);
-         * final int imageTrapHeight = imageTrap.getHeight(null);
-         * physicEngine.addToEnvironmentList(new SolidSprite(0 * imageTrapWidth,
-         * 1 * imageTrapHeight,
-         * imageTrap,
-         * imageTrapWidth,
-         * imageTrapHeight));
-         **/
         physicEngine.setEnvironment(level.getSolidSpriteList());
-
-        // ArrayList<Trap> traps = level.getTrapList();
-        // Loop through each trap and add it to the environment
-        // for (Trap trap : traps) {
-        // physicEngine.addToEnvironmentList(trap);
-        // }
-        // `getTrapList()` returns a list of traps
 
         // Add a key listener to capture user input and control the hero character
         renderEngine.addKeyListener(gameEngine);

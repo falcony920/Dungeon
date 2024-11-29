@@ -6,20 +6,22 @@ import java.io.File;
 import java.io.IOException;
 
 public class RenderEngine extends JPanel implements Engine {
-    private ArrayList<Displayable> renderList; // Holds all objects to be rendered
+    private ArrayList<Displayable> renderList;
     private int frameCount = 0; // Used to calculate frames per second (FPS)
     private long lastTime = System.nanoTime(); // Last time a frame was recorded
     private String fpsText = "FPS: 0"; // Display string for the current FPS
-    private Image heartImage; // Image of a heart icon, used for displaying health
-    private DynamicSprite hero; // Reference to the hero sprite
-    private final int sprintBarWidth = 200; // Width of the sprint bar
-    private final int sprintBarHeight = 20; // Height of the sprint bar
 
+    private Image heartImage;
+    private DynamicSprite hero;
     private boolean gameOver = false;
+
+    private SprintBar sprintBar; // Reference to the SprintBar
 
     public RenderEngine(JFrame jFrame, DynamicSprite hero) {
         renderList = new ArrayList<>();
         this.hero = hero;
+        sprintBar = new SprintBar(); // Initialize the SprintBar
+
         try {
             // Load the heart image for the health display
             heartImage = ImageIO.read(new File("./img/heart.png"));
@@ -58,7 +60,6 @@ public class RenderEngine extends JPanel implements Engine {
 
         // Draw heart icons representing health
         double nb_hearts = hero.getHearts();
-        System.out.println("la vie du héros est " + nb_hearts);
         if (nb_hearts > 0) {
             if (heartImage != null) {
                 for (int i = 0; i < nb_hearts; i++) {
@@ -69,53 +70,13 @@ public class RenderEngine extends JPanel implements Engine {
             gameOver = true;
         }
 
-        // Call method to draw the sprint bar
-        drawSprintBar(g);
-    }
-
-    // Method to render the sprint bar with a dynamic width and percentage
-    private void drawSprintBar(Graphics g) {
-        if (hero.isRunning()) {
-            // Initialize sprint start time if it's not already set
-            if (hero.getSprintStartTime() == -1) {
-                hero.setSprintStartTime(System.currentTimeMillis());
-            }
-
-            // Calculate how much of the sprint time has elapsed
-            long elapsedTime = System.currentTimeMillis() - hero.getSprintStartTime();
-            int sprintWidth = (int) (sprintBarWidth * (1 - (double) elapsedTime / hero.getSprintDuration()));
-
-            // Stop sprinting if the duration is complete
-            if (elapsedTime >= hero.getSprintDuration()) {
-                sprintWidth = 0;
-                hero.setRunning(false);
-            }
-
-            // Draw a green sprint bar with rounded corners
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(new Color(34, 139, 34));
-            g2d.fillRoundRect(150, 10, sprintWidth, sprintBarHeight, 10, 10);
-
-            // Draw a dark green border around the sprint bar
-            g2d.setColor(new Color(0, 100, 0));
-            g2d.setStroke(new BasicStroke(2));
-            g2d.drawRoundRect(150, 10, sprintWidth, sprintBarHeight, 10, 10);
-
-            // Display the remaining sprint percentage above the bar
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 14));
-            String sprintPercentage = String.format("%.0f%%",
-                    (1 - (double) elapsedTime / hero.getSprintDuration()) * 100);
-            g.drawString(sprintPercentage,
-                    150 + sprintWidth / 2 - g.getFontMetrics().stringWidth(sprintPercentage) / 2,
-                    10 + sprintBarHeight / 2 + 5);
-        }
+        // Call method to draw the sprint bar from SprintBar class
+        sprintBar.draw(g, hero); // Pass the Graphics object and hero instance
     }
 
     @Override
     public void update() {
         if (gameOver) {
-
             // Draw the game-over screen
             GameOverScreen gameOverScreen = new GameOverScreen();
             gameOverScreen.draw(getGraphics());

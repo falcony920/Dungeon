@@ -30,7 +30,7 @@ public class TitleScreen extends JPanel {
         // Title label
         JLabel titleLabel = new JLabel("Dungeon Crawler", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
-        titleLabel.setForeground(Color.WHITE); // Change text color to make it stand out
+        titleLabel.setForeground(Color.WHITE);
         mainPanel.add(titleLabel, gbc);
 
         // Start button
