@@ -6,15 +6,21 @@ import java.util.ArrayList;
 public class DynamicSprite extends SolidSprite {
     private Direction direction = Direction.EAST;
     private double speed = 5;
+    private int hearts = 3;
     private double timeBetweenFrame = 250;
     private boolean isWalking = true;
     private boolean isRunning = false; // on fera accélérer le perso en appuyant sur la touche z
     private long sprintStartTime;
     private final int sprintDuration = 2000; // 3 seconds for sprint
     private final int spriteSheetNumberOfColumn = 10;
+    private long lastTrapCollisionTime = 0;
 
     public DynamicSprite(double x, double y, Image image, double width, double height) {
         super(x, y, image, width, height);
+    }
+
+    public double getHearts() {
+        return hearts;
     }
 
     // Méthode pour obtenir la vitesse actuelle
@@ -69,12 +75,61 @@ public class DynamicSprite extends SolidSprite {
         }
 
         for (Sprite s : environment) {
-            if ((s instanceof SolidSprite) && (s != this)) {
+            if (s instanceof SolidSprite && s != this) { // Ensure s is a SolidSprite and not the current object
                 if (((SolidSprite) s).intersect(moved)) {
-                    return false;
+                    // Check if it's a trap
+                    if (((SolidSprite) s).isTrap) {
+                        long currentTime = System.currentTimeMillis();
+
+                        // Only decrease hearts if 1 second has passed since last trap hit
+                        if (currentTime - lastTrapCollisionTime >= 1000) {
+                            System.out.println("Collision detected with a trap!");
+                            hearts--; // Decrease hearts if a trap is hit
+                            System.out.println("Hearts left: " + hearts);
+
+                            if (hearts <= 0) {
+                                System.out.println("Game Over!");
+                                // Implement any game-over logic here
+                            }
+
+                            // Update the time of the last trap collision
+                            lastTrapCollisionTime = currentTime;
+                        }
+                    }
+                    return false; // Stop further movement after solid object collision
                 }
             }
         }
+
+        /**
+         * // Check for collisions with traps and decrease hearts if collided
+         * for (Sprite s : environment) {
+         * if (s instanceof SolidSprite) { // Assuming traps are also SolidSprites
+         * if (((SolidSprite) s).intersect(moved)) {
+         * // Debug: Print the position and the hit box of the trap and the hero
+         * System.out.println("Collision detected!");
+         * System.out.println("Hero position: x = " + this.x + ", y = " + this.y);
+         * // System.out.println("Trap position: x = " + s.getX() + ", y = " +
+         * s.getY());
+         * System.out.println("Hero hit box: " + moved);
+         * System.out.println("Trap hit box: " + ((SolidSprite) s).getHitBox());
+         * 
+         * // Decrease hearts when a trap is encountered
+         * hearts--;
+         * System.out.println("Hit a trap! Hearts left: " + hearts);
+         * 
+         * // Check if the hero's hearts are depleted
+         * if (hearts <= 0) {
+         * System.out.println("Game Over!");
+         * // Implement any game-over logic you need
+         * }
+         * 
+         * break;
+         * }
+         * }
+         * }
+         **/
+
         return true;
     }
 
@@ -140,6 +195,25 @@ public class DynamicSprite extends SolidSprite {
         // Affiche le nouvel état de la course
         System.out.println("Course changée : " + (isRunning ? "Activée" : "Désactivée"));
     }
+
+    /**
+     * // Check for collision with traps
+     * public void checkForTrapCollision(ArrayList<Trap> traps) {
+     * Rectangle heroBounds = this.getBounds();
+     * for (Trap trap : traps) {
+     * if (trap.getBounds().intersects(heroBounds)) {
+     * hearts--;
+     * traps.remove(trap);
+     * System.out.println("Hero hit a trap! Health: " + hearts);
+     * if (hearts <= 0) {
+     * System.out.println("Game Over!");
+     * // Implement game-over logic
+     * }
+     * break;
+     * }
+     * }
+     * }
+     **/
 
     @Override
     public void draw(Graphics g) {

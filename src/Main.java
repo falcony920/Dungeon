@@ -83,18 +83,30 @@ public class Main {
 
         // Set up the environment (solid objects like walls, traps) and add them for
         // collision detection
+        /**
+         * final Image imageTrap = ImageIO.read(new File("./img/trap.png"));
+         * final int imageTrapWidth = imageTrap.getWidth(null);
+         * final int imageTrapHeight = imageTrap.getHeight(null);
+         * physicEngine.addToEnvironmentList(new SolidSprite(0 * imageTrapWidth,
+         * 1 * imageTrapHeight,
+         * imageTrap,
+         * imageTrapWidth,
+         * imageTrapHeight));
+         **/
         physicEngine.setEnvironment(level.getSolidSpriteList());
-        ArrayList<Trap> traps = level.getTrapList();
+
+        // ArrayList<Trap> traps = level.getTrapList();
         // Loop through each trap and add it to the environment
-        for (Trap trap : traps) {
-            physicEngine.addToEnvironmentList(trap);
-        }
+        // for (Trap trap : traps) {
+        // physicEngine.addToEnvironmentList(trap);
+        // }
         // `getTrapList()` returns a list of traps
 
         // Add a key listener to capture user input and control the hero character
         renderEngine.addKeyListener(gameEngine);
         renderEngine.setFocusable(true); // Ensure the game panel can receive key events
         renderEngine.requestFocusInWindow(); // Request focus to receive key events
+
     }
 
     public static void main(String[] args) throws Exception {

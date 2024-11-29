@@ -48,12 +48,13 @@ public class Playground {
                                     lineNumber * imageRockHeight, imageRock, imageRockWidth, imageRockHeight));
                             break;
                         case 'P':
-                            environment.add(new Trap(columnNumber * imageTrapWidth,
+                            SolidSprite trap = new SolidSprite(columnNumber * imageTrapWidth,
                                     lineNumber * imageTrapHeight,
                                     imageTrap,
                                     imageTrapWidth,
-                                    imageTrapHeight,
-                                    10)); // 10 is the damage dealt by the trap
+                                    imageTrapHeight);
+                            trap.isTrap = true;
+                            environment.add(trap);
                             break;
                     }
                     columnNumber++;
@@ -82,16 +83,5 @@ public class Playground {
             displayableArrayList.add((Displayable) sprite);
         }
         return displayableArrayList;
-    }
-
-    // Returns a list of only the traps from the environment
-    public ArrayList<Trap> getTrapList() {
-        ArrayList<Trap> trapArrayList = new ArrayList<>();
-        for (Sprite sprite : environment) {
-            if (sprite instanceof Trap) {
-                trapArrayList.add((Trap) sprite);
-            }
-        }
-        return trapArrayList;
     }
 }
